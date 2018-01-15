@@ -1,0 +1,39 @@
+<?php
+/**
+ * @file
+ * Installation file for Ignis Instance.
+ */
+
+/**
+ * Implements hook_install()
+ */
+function ignis_instance_install(){
+  //Initialising variables needed for module.
+  variable_set('ignis_instance_select_file', NULL);
+  variable_set('ignis_instance_destination_path', 'surveys/');
+  variable_set('ignis_instance_fdestination_path', DRUPAL_ROOT . '/' . 'surveys/');
+  variable_set('ignis_instance_source_path',DRUPAL_ROOT);
+
+  $ignis_source_path = variable_get('ignis_instance_fdestination_path');
+  file_prepare_directory($ignis_source_path, FILE_CREATE_DIRECTORY);
+
+  //Using get_() for localization as t() not available.
+  $t = get_t();
+  drupal_set_message($t('Ignis Instance variables created successfully'));
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+
+function ignis_instance_uninstall(){
+  //Deleting or clearing module variables.
+  variable_del('ignis_instance_select_file');
+  variable_del('ignis_instance_destination_path');
+  variable_del('ignis_instance_fdestination_path');
+  variable_del('ignis_instance_source_path');
+
+  //Using get_() for localization as t() not available.
+  $t = get_t();
+  drupal_set_message($t('Ignis Instance variables cleared successfully'));
+}
