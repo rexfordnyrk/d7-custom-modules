@@ -1,0 +1,252 @@
+<?php
+
+/**
+ * @file
+ * To create and setup an instance installation if the survey platform per user.
+ */
+
+/**
+ * Implements hook_help(). To add module help info to help module.
+ */
+function ignis_instance_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#ignis_instance' :{
+      $help_text = '<h3>' . t('About') . '</h3>';
+      $help_text .= '<p>' . t('This module was created by Ignis mainly to automate and ensure the creation of an instance for every newly created users.');
+      $help_text .= '</p>';
+      return $help_text;
+    }
+  }
+}
+
+/**
+ * Implements hook_permissions().
+ */
+function ignis_instance_permission() {
+  return array(
+    'administer instance setup' => array(
+    'title' => t('Administer Instance Setup'),
+    'description' => t('Permissions to define instance setup parameters'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+/**
+ * Implements hook_menu().
+ */
+function ignis_instance_menu() {
+  $items = array();
+
+  //Defines the configuration menu group in admin/config page.
+  $items['admin/config/ignis_instance'] = array(
+    'title' => 'Ignis Instance',
+    'description' => 'Administer Ignis Instance',
+    'access arguments' => array('administer instance setup'),
+  );
+
+  //Defines the configuration settings page.
+  $items['admin/config/ignis_instance/settings'] = array(
+    'title' => 'Ignis Instance Settings',
+    'description' => 'Settings page for configuring Ignis Instance',
+    'access arguments' => array('administer instance setup'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ignis_instance_admin_settings_form'),
+  );
+  //Defines the configuration settings page.
+  $items['admin/config/ignis_instance/testpage'] = array(
+    'title' => 'Ignis Instance testpage',
+    'description' => 'Settings page for seeing outputs of Ignis Instance',
+    'access arguments' => array('administer instance setup'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ignis_instance_admin_test_form'),
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_form().
+ *
+ * Form creation for settings page.
+ */
+function ignis_instance_admin_settings_form($form, &$form_state){
+
+  //Fieldset to contain rest of form elements.
+  $form['ignis_instance_fieldset'] = array(
+    '#title' => 'Instance Settings',
+    '#type' => 'fieldset',
+    '#description' => t('will later put a description here'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+//
+//  // Textfield for path to compressed file.
+//  $form['ignis_instance_fieldset']['ignis_instance_source_path'] = array(
+//    '#title' => t('Source Directory'),
+//    '#description' => t('Provide path or directory for zipfile without the leading or trailing slashes "/".' .
+//    'Path must be relative to the your site root. If left blank, the drupal root directory will be used as default.'),
+//    '#type' => 'textfield',
+//    '#required' => FALSE,
+//  );
+
+  //Textfield for destination path to extract compressed file,
+  $form['ignis_instance_fieldset']['ignis_instance_destination_path'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Destination'),
+    '#description' => t('Destination path or directory to extract zip file to.'),
+    '#required' => TRUE,
+    '#default_value' => variable_get('ignis_instance_destination_path'),
+  );
+
+
+    $ignis_zipfiles = array();
+    // Read directory and pick .zip, .rar and .gz files.
+    if ($dh = opendir(variable_get('ignis_instance_source_path'))) {
+      while (($file = readdir($dh)) !== FALSE) {
+        if (pathinfo($file, PATHINFO_EXTENSION) === 'zip'
+          || pathinfo($file, PATHINFO_EXTENSION) === 'gz'
+          || pathinfo($file, PATHINFO_EXTENSION) === 'rar'
+        ) {
+          $ignis_zipfiles["$file"] = $file;
+        }
+      }
+      closedir($dh);
+
+      if (!empty($ignis_zipfiles)) {
+        $GLOBALS['ignis_instance_status'] = array('info' => t('.zip or .gz or .rar files found, ready for extraction'));
+      }
+      else {
+        $GLOBALS['ignis_instance_status'] = array('info' => t('No .zip or .gz or rar files found. So kindly ensure that compressed file is place in right directory.'));
+      }
+
+    }
+
+  //select field populated by compressed files detected in specified directory,
+  $form['ignis_instance_fieldset']['ignis_instance_select_file'] = array(
+    '#type' => 'select',
+    '#title' => t('Select File'),
+    '#options' => $ignis_zipfiles,
+    '#description' => $GLOBALS['ignis_instance_status']['info'],
+    '#required' => TRUE,
+    '#default_value' => ( in_array(variable_get('ignis_instance_select_file'),$ignis_zipfiles,TRUE) ? variable_get('ignis_instance_select_file') : NULL),
+  );
+
+
+  return system_settings_form($form);
+}
+
+/**
+ * Form validation for ignis_instance_admin_settings_form
+ */
+function ignis_instance_admin_settings_form_validate($form, &$form_state){
+  //Using devel debugging.
+  //dpm($form_state);
+}
+
+/**
+ * Form submit action or processing for ignis_instance_admin_settings_form.
+ *
+ */
+function ignis_instance_admin_settings_form_submit($form, &$form_state){
+  //rebuild form with new correct values if passed validation
+  //otherwise fall back to default.
+  $form_state['rebuild'] = TRUE;
+
+  //save ignis instance settings variables.
+//  variable_set('ignis_instance_source_path',);
+  variable_set('ignis_instance_destination_path',$form_state['values']['ignis_instance_destination_path']);
+  variable_set('ignis_instance_select_file',$form_state['values']['ignis_instance_select_file']);
+}
+
+/**
+ * Implements hook_form();
+ *
+ * for creating test page
+ */
+function ignis_instance_admin_test_form($form,&$form_state){
+
+  //Fieldset to contain rest of form elements.
+  $form['ignis_instance_test_fieldset'] = array(
+    '#title' => 'Instance Test',
+    '#type' => 'fieldset',
+    '#description' => t('will later put a description here'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+  $form['ignis_instance_test_text'] = array(
+    '#title' => 'Instance Test demo',
+    '#type' => 'textfield',
+    '#description' => t('some dummy stuff here'),
+    '#default_value' => 'relax',
+  );
+
+  return system_settings_form($form);
+}
+
+function ignis_instance_admin_test_form_validate($form, &$form_state){
+  //Using devel debugging.
+  dpm($form_state);
+  dpm(variable_get('ignis_account_details'));
+  dpm(variable_get('ignis_user_dest'));
+
+  /*$ignis_install_setup = new Ignis_Instance_Install_Setup(variable_get('ignis_user_dest'));
+
+  dpm($ignis_install_setup);
+
+  dpm($ignis_install_setup->set_config_file_contents(variable_get('ignis_user_dest')));
+
+  dpm($ignis_install_setup);*/
+}
+/**
+ * Form submit action or processing for ignis_instance_admin_settings_form.
+ *
+ */
+function ignis_instance_admin_test_form_submit($form, &$form_state){
+  $form_state['rebuild'] = TRUE;
+
+}
+/**
+ * Implements hook_user_registrationpassword_activated_user().
+ */
+function ignis_instance_user_registrationpassword_activated_user($account) {
+
+}
+
+/**
+ * Implements hook_user_presave().
+ */
+function ignis_instance_user_presave(&$edit, $account, $category) {
+  dpm($account);
+
+  variable_set('ignis_account_details',$account);
+  dpm(variable_get('ignis_account_details'));
+
+  /**
+   *creating object of unzipper class
+   */
+  $unzipper = new Unzipper();
+  /**
+   * Generating user install path.
+   */
+  $ignis_user_dest = $unzipper->composeDestinationPath(variable_get('ignis_instance_destination_path'),
+    $account->name,$account->profile_main['field_country']['und'][0]['iso2']);
+
+  dpm($ignis_user_dest);
+  variable_set('ignis_user_dest',$ignis_user_dest);
+  dpm(variable_get('ignis_user_dest'));
+  /*
+   * Calling prepareExtraction() to determine archive type,if it exists and the extraction method to use.
+   */
+  $unzipper->prepareExtraction(variable_get('ignis_instance_select_file'),$ignis_user_dest);
+
+  /*
+  * checking if success message or error message and displaying message.
+  */
+  !empty($GLOBALS['ignis_instance_status']['success']) ?
+    drupal_set_message($GLOBALS['ignis_instance_status']['success'],'status') :
+    drupal_set_message($GLOBALS['ignis_instance_status']['error'],'error');
+
+}
