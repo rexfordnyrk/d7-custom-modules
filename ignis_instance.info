@@ -1,0 +1,8 @@
+name = Ignis Instance
+description = Creates and sets up an instance of survey platform.
+core = 7.x
+version = "7.x-0.1-dev"
+project = "ignis_instance"
+configure = 'admin/config/ignis_instance/settings'
+files[] = ignis_instance_unzipper.admin.inc
+files[] = ignis_instance_install_setup.inc
