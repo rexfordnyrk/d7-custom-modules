@@ -4,5 +4,8 @@ core = 7.x
 version = "7.x-0.1-dev"
 project = "ignis_instance"
 configure = 'admin/config/ignis_instance/settings'
+
+dependencies[] = user_registrationpassword
+
 files[] = ignis_instance_unzipper.admin.inc
 files[] = ignis_instance_install_setup.inc
