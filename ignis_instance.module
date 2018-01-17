@@ -188,20 +188,13 @@ function ignis_instance_admin_test_form($form,&$form_state){
 
 function ignis_instance_admin_test_form_validate($form, &$form_state){
   //Using devel debugging.
-  dpm($form_state);
-  dpm(variable_get('ignis_account_details'));
-  dpm(variable_get('ignis_user_dest'));
+//  dpm($form_state);
+//  dpm(variable_get('ignis_account_details'));
+//  dpm(variable_get('ignis_user_dest'));
 
-  /*$ignis_install_setup = new Ignis_Instance_Install_Setup(variable_get('ignis_user_dest'));
-
-  dpm($ignis_install_setup);
-
-  dpm($ignis_install_setup->set_config_file_contents(variable_get('ignis_user_dest')));
-
-  dpm($ignis_install_setup);*/
 }
 /**
- * Form submit action or processing for ignis_instance_admin_settings_form.
+ * Form submit action or processing for ignis_instance_admin_test_form_submit.
  *
  */
 function ignis_instance_admin_test_form_submit($form, &$form_state){
@@ -249,4 +242,9 @@ function ignis_instance_user_presave(&$edit, $account, $category) {
     drupal_set_message($GLOBALS['ignis_instance_status']['success'],'status') :
     drupal_set_message($GLOBALS['ignis_instance_status']['error'],'error');
 
+  //fulname variable
+  $ignis_user_fullname = $account->profile_main['field_first_name']['und'][0]['value'] .' '. $account->profile_main['field_last_name']['und'][0]['value'];
+  //creating object of install setup class
+  $ignis_install_setup = new Ignis_Instance_Install_Setup($ignis_user_fullname,$account->name,$account->pass,$account->mail,$ignis_user_dest);
+  $ignis_install_setup->set_config_file_contents($ignis_user_dest);
 }
