@@ -227,9 +227,9 @@ function ignis_instance_user_presave(&$edit, $account, $category) {
   $ignis_user_dest = $unzipper->composeDestinationPath(variable_get('ignis_instance_destination_path'),
     $account->name,$account->profile_main['field_country']['und'][0]['iso2']);
 
-  dpm($ignis_user_dest);
+//  dpm($ignis_user_dest);
   variable_set('ignis_user_dest',$ignis_user_dest);
-  dpm(variable_get('ignis_user_dest'));
+//  dpm(variable_get('ignis_user_dest'));
   /*
    * Calling prepareExtraction() to determine archive type,if it exists and the extraction method to use.
    */
