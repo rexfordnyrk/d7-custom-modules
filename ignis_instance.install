@@ -10,8 +10,8 @@
 function ignis_instance_install(){
   //Initialising variables needed for module.
   variable_set('ignis_instance_select_file', NULL);
-  variable_set('ignis_instance_destination_path', 'surveys/');
-  variable_set('ignis_instance_fdestination_path', DRUPAL_ROOT . '/' . 'surveys/');
+  variable_set('ignis_instance_destination_path', 'v1/');
+  variable_set('ignis_instance_fdestination_path', DRUPAL_ROOT . '/' . 'v1/');
   variable_set('ignis_instance_source_path',DRUPAL_ROOT);
 
   $ignis_source_path = variable_get('ignis_instance_fdestination_path');
