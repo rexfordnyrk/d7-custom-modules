@@ -212,10 +212,10 @@ function ignis_instance_user_registrationpassword_activated_user($account) {
  * Implements hook_user_presave().
  */
 function ignis_instance_user_presave(&$edit, $account, $category) {
-  dpm($account);
+//  dpm($account);
 
   variable_set('ignis_account_details',$account);
-  dpm(variable_get('ignis_account_details'));
+//  dpm(variable_get('ignis_account_details'));
 
   /**
    *creating object of unzipper class
