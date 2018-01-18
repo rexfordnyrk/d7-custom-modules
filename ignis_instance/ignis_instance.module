@@ -200,14 +200,14 @@ function ignis_instance_user_registrationpassword_activated_user($account) {
 
 }
 
-$ignis_instance_account = NULL;
+$ignis_instance_account_pass;
 /**
  * Implements hook_user_presave().
  */
 function ignis_instance_user_presave(&$edit, $account, $category) {
-
-  global $ignis_instance_account;
-  $ignis_instance_account = $account;
+//grabbing password to use for instance password
+  global $ignis_instance_account_pass;
+  $ignis_instance_account_pass = $account->pass;
 }
 
 /**
@@ -215,7 +215,7 @@ function ignis_instance_user_presave(&$edit, $account, $category) {
  */
 function ignis_instance_user_insert(&$edit, $account, $category) {
 
-  global $ignis_instance_account;
+  global $ignis_instance_account_pass;
   /**
    *creating object of unzipper class
    */
@@ -240,7 +240,7 @@ function ignis_instance_user_insert(&$edit, $account, $category) {
   //fulname variable
   $ignis_user_fullname = $account->profile_main['field_first_name']['und'][0]['value'] .' '. $account->profile_main['field_last_name']['und'][0]['value'];
   //creating object of install setup class
-  $ignis_install_setup = new Ignis_Instance_Install_Setup($ignis_user_fullname,$account->name,$ignis_instance_account->pass,$account->mail,$ignis_user_dest);
+  $ignis_install_setup = new Ignis_Instance_Install_Setup($ignis_user_fullname,$account->name,$ignis_instance_account_pass,$account->mail,$ignis_user_dest);
   $ignis_install_setup->set_config_file_contents($ignis_user_dest);
   $ignis_install_setup->run_instance_install();
 }
