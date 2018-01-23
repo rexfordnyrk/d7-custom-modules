@@ -63,7 +63,7 @@ class Ignis_Instance_Install_Setup {
 
   public function run_instance_install(){
     chdir($this->command_dir);
-    $output = shell_exec('php console.php install '.$this->a_username.' '.$this->a_password.' '.$this->fullname.' '.$this->email);
+    $output = shell_exec('php console.php install "'.$this->a_username.'" "'.$this->a_password.'" "'.$this->fullname.'" "'.$this->email.'"');
     (strpos($output,"create-mysql.sql") !== FALSE ? $GLOBALS['install_status'] = "Success" :
       $GLOBALS['install_status'] = "fail:" . $output );
     chdir(DRUPAL_ROOT);
