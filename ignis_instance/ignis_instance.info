@@ -7,7 +7,7 @@ configure = 'admin/config/ignis_instance/settings'
 
 dependencies[] = user_registrationpassword
 dependencies[] = countries
-dependencies[] = profiles2
+dependencies[] = profile2
 
 files[] = ignis_instance_unzipper.admin.inc
 files[] = ignis_instance_install_setup.inc
