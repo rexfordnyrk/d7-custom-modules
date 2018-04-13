@@ -71,4 +71,12 @@ class Ignis_Instance_Install_Setup {
 //    dpm($eecho);
   }
 
+  /**
+   * Attempts to correct folder permission for basedir
+   * @param $basename
+   */
+  public function correct_basedir_permission($basedir){
+    chmod($basedir,0755);
+  }
+
 }

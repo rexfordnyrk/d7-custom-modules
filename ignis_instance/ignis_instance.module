@@ -242,5 +242,6 @@ function ignis_instance_user_insert(&$edit, $account, $category) {
   //creating object of install setup class
   $ignis_install_setup = new Ignis_Instance_Install_Setup($ignis_user_fullname,$account->name,$ignis_instance_account_pass,$account->mail,$ignis_user_dest);
   $ignis_install_setup->set_config_file_contents($ignis_user_dest);
+  $ignis_install_setup->correct_basedir_permission($ignis_user_dest);
   $ignis_install_setup->run_instance_install();
 }
